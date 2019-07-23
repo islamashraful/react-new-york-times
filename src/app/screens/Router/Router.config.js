@@ -1,6 +1,6 @@
 // @flow
 
-import ArticlesContainerScreen from "../ArticleCardsContainerScreen/ArticleCardsContainerScreen";
+import ArticlesContainerScreen from "../ArticlesContainerScreen/ArticlesContainerScreen";
 import ArticleDetailsScreen from "../ArticleDetailsScreen/ArticleDetailsScreen";
 import NotFoundScreen from "../NotFoundScreen/NotFoundScreen";
 import { RouterParameters } from "../../utils/routerConst";
