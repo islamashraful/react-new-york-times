@@ -15,7 +15,7 @@ const NavBar = (props: Props) => (
   <AppBar position="relative">
     <Toolbar>
       <Typography variant="h6" color="inherit" noWrap>
-        Album layout
+        New York Times
       </Typography>
     </Toolbar>
   </AppBar>
