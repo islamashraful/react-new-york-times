@@ -12,13 +12,11 @@ type Props = {
 /**
  * The Content Layout that adds some general styling and components like NavBar
  */
-const RouterContentLayout = ({ children }: Props) => {
-  return (
-    <>
-      <NavBar />
-      {children}
-    </>
-  );
-};
+const RouterContentLayout = ({ children }: Props) => (
+  <>
+    <NavBar />
+    {children}
+  </>
+);
 
 export default RouterContentLayout;
