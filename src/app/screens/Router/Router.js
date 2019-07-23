@@ -4,6 +4,8 @@ import React, { Component } from "react";
 import values from "lodash/values";
 import { Route, Switch, Redirect } from "react-router-dom";
 import { ROUTES } from "./Router.config";
+import RouterMainLayout from "./components/RouterMainLayout/RouterMainLayout";
+import RouterContentLayout from "./components/RouterContentLayout/RouterContentLayout";
 
 type Props = {};
 
@@ -13,17 +15,21 @@ type Props = {};
 class Router extends Component<Props> {
   render() {
     return (
-      <Switch>
-        {values(ROUTES).map((item, index) => (
-          <Route
-            key={index}
-            exact
-            path={item.path}
-            component={item.component}
-          />
-        ))}
-        <Redirect to={ROUTES.ARTICLE_CARDS_CONTAINER.path} />
-      </Switch>
+      <RouterMainLayout>
+        <RouterContentLayout>
+          <Switch>
+            {values(ROUTES).map((item, index) => (
+              <Route
+                key={index}
+                exact
+                path={item.path}
+                component={item.component}
+              />
+            ))}
+            <Redirect to={ROUTES.ARTICLES_CONTAINER.path} />
+          </Switch>
+        </RouterContentLayout>
+      </RouterMainLayout>
     );
   }
 }
