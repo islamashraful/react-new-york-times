@@ -63,12 +63,15 @@ const styles = theme => ({
  * A wrapper component for all articles
  */
 class ArticlesContainerScreen extends PureComponent<Props> {
-  handleOnClick = ({ id: articleId }: ArticleType) => {
+  handleOnClick = (article: ArticleType) => {
     const newRoute = formatRoute(ROUTES.ARTICLE_DETAILS.path, {
-      articleId
+      articleId: article.id
     });
 
-    this.props.history.push(newRoute);
+    this.props.history.push({
+      pathname: newRoute,
+      state: article
+    });
   };
 
   render() {
