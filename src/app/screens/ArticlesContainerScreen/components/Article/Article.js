@@ -16,6 +16,8 @@ type Props = {
   heading: string,
   /** Description of the component */
   description: string,
+  /** Url of image */
+  imageUrl: String,
   /** Function to call with button click */
   onClick: Function
 };
@@ -38,20 +40,26 @@ const styles = {
  * Custom MaterialUI Card component
  * Shows information about an Article
  */
-const Article = ({ classes, heading, description, onClick }: Props) => {
+const Article = ({
+  classes,
+  heading,
+  imageUrl,
+  description,
+  onClick
+}: Props) => {
   const { card, cardMedia, cardContent } = classes;
+
+  const formattedDescription =
+    description.length > 50 ? `${description.slice(0, 100)}...` : description;
 
   return (
     <Card className={card}>
-      <CardMedia
-        className={cardMedia}
-        image="https://source.unsplash.com/random"
-      />
+      <CardMedia className={cardMedia} image={imageUrl} />
       <CardContent className={cardContent}>
         <Typography gutterBottom variant="h5" component="h2">
           {heading}
         </Typography>
-        <Typography>{description}</Typography>
+        <Typography>{formattedDescription}</Typography>
       </CardContent>
       <CardActions>
         <Button

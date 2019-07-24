@@ -14,6 +14,7 @@ import Container from "@material-ui/core/Container";
 import CardContent from "@material-ui/core/CardContent";
 import CardMedia from "@material-ui/core/CardMedia";
 import { ROUTES } from "../Router/Router.config";
+import { AppHelper } from "../../helpers/AppHelper";
 import { type RouterMatchType } from "../../types/routerMatchType";
 
 const publishedDateFormat = "MMMM D, YYYY";
@@ -45,54 +46,6 @@ const styles = theme => ({
   }
 });
 
-const article = {
-  web_url: "https://www.nytimes.com/2019/06/27/technology/jony-ive-apple.html",
-  snippet:
-    "The executive played a key role in the iPod and iPhone during his 27 years at Apple, which will be a client of his new company.",
-  lead_paragraph:
-    "SAN FRANCISCO — Jony Ive, Apple’s chief design officer and one of the most influential executives in the history of the Silicon Valley giant, is leaving the company.",
-  abstract:
-    "The executive played a key role in the iPod and iPhone during his 27 years at Apple, which will be a client of his new company.",
-  print_page: "3",
-  blog: {},
-  source: "The New York Times",
-  multimedia: [
-    {
-      rank: 0,
-      subtype: "xlarge",
-      caption: null,
-      credit: null,
-      type: "image",
-      url:
-        "images/2019/06/27/business/27ive/dbd26e5006504aee855a20b4e77cb6ee-articleLarge.jpg",
-      height: 400,
-      width: 600,
-      legacy: {
-        xlarge:
-          "images/2019/06/27/business/27ive/dbd26e5006504aee855a20b4e77cb6ee-articleLarge.jpg",
-        xlargewidth: 600,
-        xlargeheight: 400
-      },
-      subType: "xlarge",
-      crop_name: "articleLarge"
-    }
-  ],
-  headline: {
-    main:
-      "Jony Ive, Designer Who Made Apple Look Like Apple, Is Leaving to Start a Firm",
-    kicker: null,
-    content_kicker: null,
-    print_headline: "Designer Who Made Apple Look Like Apple Is Leaving",
-    name: null,
-    seo: null,
-    sub: null
-  },
-  pub_date: "2019-06-27T21:22:56+0000",
-  document_type: "article",
-  news_desk: "Business",
-  section_name: "Technology"
-};
-
 /**
  * Article Details Screen
  * Show details of an article
@@ -105,12 +58,8 @@ class ArticleDetailsScreen extends PureComponent<Props> {
   }
 
   render() {
-    const { classes } = this.props;
-
-    const imageUrl =
-      (article.multimedia[0] &&
-        `https://static01.nyt.com/${article.multimedia[0].url}`) ||
-      "";
+    const { classes, location } = this.props;
+    const { state: article } = location;
 
     return (
       <Container maxWidth="lg">
@@ -130,7 +79,9 @@ class ArticleDetailsScreen extends PureComponent<Props> {
               <Card>
                 <div>
                   <CardMedia
-                    image={imageUrl}
+                    image={AppHelper.getImageUrl(
+                      article.multimedia.length && article.multimedia[0].url
+                    )}
                     title="Image title"
                     className={classes.cardMedia}
                   />

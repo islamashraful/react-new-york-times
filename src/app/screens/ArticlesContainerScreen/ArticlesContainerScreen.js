@@ -10,35 +10,19 @@ import { withStyles } from "@material-ui/core/styles";
 import { ROUTES } from "../Router/Router.config";
 import { type ArticleType } from "../../types/articleType";
 import SearchBar from "./components/SearchBar/SearchBar";
-
-const articles: ArticleType[] = [
-  {
-    id: 1,
-    heading: "heading 1",
-    description: "this is a sample description"
-  },
-  {
-    id: 2,
-    heading: "heading 2",
-    description: "this is a sample description"
-  },
-  {
-    id: 3,
-    heading: "heading 3",
-    description: "this is a sample description"
-  },
-  {
-    id: 4,
-    heading: "heading 4",
-    description: "this is a sample description"
-  }
-];
+import debounce from "lodash/debounce";
+import { getArticles } from "../../api/articleApi";
+import { AppHelper } from "../../helpers/AppHelper";
 
 type Props = {
   /** Classes attached with the component */
   classes: Object,
   /** History object for navigation */
   history: any
+};
+
+type State = {
+  articles: ArticleType[]
 };
 
 const styles = theme => ({
@@ -56,10 +40,24 @@ const styles = theme => ({
  * Articles Container Screen
  * A wrapper component for all articles
  */
-class ArticlesContainerScreen extends PureComponent<Props> {
+class ArticlesContainerScreen extends PureComponent<Props, State> {
+  state = {
+    articles: []
+  };
+
+  componentDidMount() {
+    // TODO:: Move api key to env
+    getArticles({
+      "api-key": "16fI9yvA6UWGIfq4gzAyDSS36XSOIuGA",
+      q: "mac-pro"
+    }).then(data => {
+      this.setState({ articles: data.docs });
+    });
+  }
+
   handleOnClick = (article: ArticleType) => {
     const newRoute = formatRoute(ROUTES.ARTICLE_DETAILS.path, {
-      articleId: article.id
+      articleId: article._id.split("article/")[1]
     });
 
     this.props.history.push({
@@ -68,9 +66,14 @@ class ArticlesContainerScreen extends PureComponent<Props> {
     });
   };
 
+  handleInputChange = debounce((value: string) => {
+    console.log(value);
+  }, 500);
+
   render() {
     const { classes } = this.props;
     const { heroContent, cardGrid } = classes;
+    const { articles } = this.state;
 
     return (
       <>
@@ -84,7 +87,7 @@ class ArticlesContainerScreen extends PureComponent<Props> {
                 color="textPrimary"
                 gutterBottom
               >
-                <SearchBar />
+                <SearchBar onChnageInputValue={this.handleInputChange} />
               </Typography>
             </Container>
           </div>
@@ -93,8 +96,11 @@ class ArticlesContainerScreen extends PureComponent<Props> {
               {articles.map((article, index) => (
                 <Grid item key={index} xs={12} sm={6} md={4}>
                   <Article
-                    heading={article.heading}
-                    description={article.description}
+                    imageUrl={AppHelper.getImageUrl(
+                      article.multimedia.length && article.multimedia[0].url
+                    )}
+                    heading={article.headline.main}
+                    description={article.lead_paragraph}
                     onClick={() => {
                       this.handleOnClick(article);
                     }}
