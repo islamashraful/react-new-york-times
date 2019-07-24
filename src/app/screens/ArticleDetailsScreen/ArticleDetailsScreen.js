@@ -115,7 +115,12 @@ class ArticleDetailsScreen extends PureComponent<Props> {
     return (
       <Container maxWidth="lg">
         <Toolbar className={classes.toolbar}>
-          <Button size="medium" variant="contained" color="primary">
+          <Button
+            size="medium"
+            variant="contained"
+            color="primary"
+            href={ROUTES.ARTICLES_CONTAINER.path}
+          >
             Articles
           </Button>
         </Toolbar>
