@@ -57,7 +57,6 @@ class ArticlesContainerScreen extends PureComponent<Props, State> {
   };
 
   componentDidMount() {
-    // TODO:: Move api key to env
     this.getNewArticles();
   }
 

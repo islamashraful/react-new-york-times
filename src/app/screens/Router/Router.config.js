@@ -2,7 +2,6 @@
 
 import ArticlesContainerScreen from "../ArticlesContainerScreen/ArticlesContainerScreen";
 import ArticleDetailsScreen from "../ArticleDetailsScreen/ArticleDetailsScreen";
-import NotFoundScreen from "../NotFoundScreen/NotFoundScreen";
 import { RouterParameters } from "../../utils/routerConst";
 import { type MenuItemType } from "../../types/routerType";
 
@@ -18,11 +17,5 @@ const ARTICLE_DETAILS: MenuItemType = {
   component: ArticleDetailsScreen
 };
 
-/** Screen: Not Found Screen */
-const NOT_FOUND: MenuItemType = {
-  path: "/not-found",
-  component: NotFoundScreen
-};
-
 /** All paths */
-export const ROUTES = { ARTICLES_CONTAINER, ARTICLE_DETAILS, NOT_FOUND };
+export const ROUTES = { ARTICLES_CONTAINER, ARTICLE_DETAILS };
