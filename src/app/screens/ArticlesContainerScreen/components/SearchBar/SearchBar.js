@@ -13,6 +13,7 @@ import capitalized from "lodash/capitalize";
 import { SortType } from "../../../../utils/sortConst";
 
 type Props = {
+  sortBy: $Values<typeof SortType>,
   onChangeDropdownValue: Function,
   onChnageInputValue: Function
 };
@@ -42,7 +43,7 @@ const styles = {
  * Notify parent component with search and sort selection by raising events
  */
 const SearchBar = (props: Props) => {
-  const { classes, onChangeDropdownValue, onChnageInputValue } = props;
+  const { classes, sortBy, onChangeDropdownValue, onChnageInputValue } = props;
 
   //TODO: Change backgroundColor of select
 
@@ -61,7 +62,7 @@ const SearchBar = (props: Props) => {
       </IconButton>
       <Divider className={classes.divider} />
       <Select
-        value="newest"
+        value={sortBy}
         onChange={e => {
           onChangeDropdownValue(e.target.value);
         }}

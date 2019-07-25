@@ -52,19 +52,13 @@ class ArticlesContainerScreen extends PureComponent<Props, State> {
   state = {
     articles: [],
     loading: false,
-    sortBy: SortType.Newest
+    sortBy: SortType.Newest,
+    searchBy: ""
   };
 
   componentDidMount() {
     // TODO:: Move api key to env
-    this.setState({ loading: true });
-    getArticles({
-      "api-key": "16fI9yvA6UWGIfq4gzAyDSS36XSOIuGA",
-      q: "mac-pro",
-      sort: this.state.sortBy
-    }).then(data => {
-      this.setState({ articles: data.docs, loading: false });
-    });
+    this.getNewArticles();
   }
 
   handleOnClick = (article: ArticleType) => {
@@ -78,14 +72,30 @@ class ArticlesContainerScreen extends PureComponent<Props, State> {
     });
   };
 
+  getNewArticles = (payload: Object) => {
+    this.setState({ loading: true });
+    getArticles(payload).then(data => {
+      this.setState({
+        articles: data.docs,
+        loading: false,
+        searchBy: payload && payload.q ? payload.q : ""
+      });
+    });
+  };
+
   handleInputChange = debounce((value: string) => {
-    console.log(value);
+    this.getNewArticles({ q: value, sort: this.state.sortBy });
   }, 500);
+
+  handleDropdownValueChange = (value: $Values<typeof SortType>) => {
+    this.setState({ sortBy: value });
+    this.getNewArticles({ sort: value, q: this.state.searchBy });
+  };
 
   render() {
     const { classes } = this.props;
     const { heroContent, cardGrid } = classes;
-    const { articles, loading } = this.state;
+    const { articles, loading, sortBy } = this.state;
 
     return (
       <>
@@ -99,7 +109,11 @@ class ArticlesContainerScreen extends PureComponent<Props, State> {
                 color="textPrimary"
                 gutterBottom
               >
-                <SearchBar onChnageInputValue={this.handleInputChange} />
+                <SearchBar
+                  sortBy={sortBy}
+                  onChnageInputValue={this.handleInputChange}
+                  onChangeDropdownValue={this.handleDropdownValueChange}
+                />
               </Typography>
             </Container>
           </div>
