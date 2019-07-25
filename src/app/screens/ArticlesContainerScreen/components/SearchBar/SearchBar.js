@@ -13,8 +13,11 @@ import capitalized from "lodash/capitalize";
 import { SortType } from "../../../../utils/sortConst";
 
 type Props = {
+  /** Selected search by option */
   sortBy: $Values<typeof SortType>,
+  /** Function to call when dropdown value change */
   onChangeDropdownValue: Function,
+  /** Function to call when input value change */
   onChnageInputValue: Function
 };
 
@@ -35,6 +38,15 @@ const styles = {
     width: 1,
     height: 28,
     margin: 4
+  },
+  select: {
+    paddingLeft: 10,
+    "& div": {
+      "&:focus": { backgroundColor: "#fff" }
+    },
+    "&:before": {
+      borderBottom: "none"
+    }
   }
 };
 
@@ -44,25 +56,25 @@ const styles = {
  */
 const SearchBar = (props: Props) => {
   const { classes, sortBy, onChangeDropdownValue, onChnageInputValue } = props;
-
-  //TODO: Change backgroundColor of select
+  const { root, input, divider, iconButton, select } = classes;
 
   return (
-    <Paper className={classes.root}>
+    <Paper className={root}>
       <InputBase
-        className={classes.input}
+        className={input}
         placeholder="Search Articles"
         inputProps={{ "aria-label": "Search Articles" }}
         onChange={e => {
           onChnageInputValue(e.target.value);
         }}
       />
-      <IconButton className={classes.iconButton} aria-label="Search">
+      <IconButton className={iconButton} aria-label="Search">
         <SearchIcon />
       </IconButton>
-      <Divider className={classes.divider} />
+      <Divider className={divider} />
       <Select
         value={sortBy}
+        className={select}
         onChange={e => {
           onChangeDropdownValue(e.target.value);
         }}
