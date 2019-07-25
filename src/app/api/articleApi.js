@@ -2,18 +2,19 @@
 
 import { api } from "../helpers/apiHelper";
 import { Endpoints } from "../utils/apiConst";
+import { API_KEY } from "../utils/const";
 
 /**
  * Get articles
  */
 export const getArticles = (search: Object) => {
   const url = Endpoints.ARTICLES_SEARCH;
-  //TODO:: Move key to env
+
   return api
     .get(url, {
       params: {
         ...search,
-        "api-key": "16fI9yvA6UWGIfq4gzAyDSS36XSOIuGA"
+        "api-key": API_KEY
       }
     })
     .then(resp => resp.data.response);
