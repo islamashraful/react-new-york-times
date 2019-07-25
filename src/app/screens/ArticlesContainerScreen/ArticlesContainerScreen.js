@@ -13,6 +13,9 @@ import SearchBar from "./components/SearchBar/SearchBar";
 import debounce from "lodash/debounce";
 import { getArticles } from "../../api/articleApi";
 import { AppHelper } from "../../helpers/AppHelper";
+import CircularProgress from "@material-ui/core/CircularProgress";
+import { SortType } from "../../utils/sortConst";
+import cx from "classnames";
 
 type Props = {
   /** Classes attached with the component */
@@ -22,7 +25,9 @@ type Props = {
 };
 
 type State = {
-  articles: ArticleType[]
+  articles: ArticleType[],
+  loading: boolean,
+  sortBy: $Values<typeof SortType>
 };
 
 const styles = theme => ({
@@ -33,6 +38,9 @@ const styles = theme => ({
   cardGrid: {
     paddingTop: theme.spacing(8),
     paddingBottom: theme.spacing(8)
+  },
+  centeredContent: {
+    textAlign: "center"
   }
 });
 
@@ -42,16 +50,20 @@ const styles = theme => ({
  */
 class ArticlesContainerScreen extends PureComponent<Props, State> {
   state = {
-    articles: []
+    articles: [],
+    loading: false,
+    sortBy: SortType.Newest
   };
 
   componentDidMount() {
     // TODO:: Move api key to env
+    this.setState({ loading: true });
     getArticles({
       "api-key": "16fI9yvA6UWGIfq4gzAyDSS36XSOIuGA",
-      q: "mac-pro"
+      q: "mac-pro",
+      sort: this.state.sortBy
     }).then(data => {
-      this.setState({ articles: data.docs });
+      this.setState({ articles: data.docs, loading: false });
     });
   }
 
@@ -73,7 +85,7 @@ class ArticlesContainerScreen extends PureComponent<Props, State> {
   render() {
     const { classes } = this.props;
     const { heroContent, cardGrid } = classes;
-    const { articles } = this.state;
+    const { articles, loading } = this.state;
 
     return (
       <>
@@ -91,23 +103,30 @@ class ArticlesContainerScreen extends PureComponent<Props, State> {
               </Typography>
             </Container>
           </div>
-          <Container className={cardGrid} maxWidth="md">
-            <Grid container spacing={4}>
-              {articles.map((article, index) => (
-                <Grid item key={index} xs={12} sm={6} md={4}>
-                  <Article
-                    imageUrl={AppHelper.getImageUrl(
-                      article.multimedia.length && article.multimedia[0].url
-                    )}
-                    heading={article.headline.main}
-                    description={article.lead_paragraph}
-                    onClick={() => {
-                      this.handleOnClick(article);
-                    }}
-                  />
-                </Grid>
-              ))}
-            </Grid>
+          <Container
+            className={cx({ [classes.centeredContent]: loading }, cardGrid)}
+            maxWidth="md"
+          >
+            {loading ? (
+              <CircularProgress className={classes.progress} />
+            ) : (
+              <Grid container spacing={4}>
+                {articles.map((article, index) => (
+                  <Grid item key={index} xs={12} sm={6} md={4}>
+                    <Article
+                      imageUrl={AppHelper.getImageUrl(
+                        article.multimedia.length && article.multimedia[0].url
+                      )}
+                      heading={article.headline.main}
+                      description={article.lead_paragraph}
+                      onClick={() => {
+                        this.handleOnClick(article);
+                      }}
+                    />
+                  </Grid>
+                ))}
+              </Grid>
+            )}
           </Container>
         </main>
       </>

@@ -3,7 +3,7 @@
  * @readonly
  * @enum {string}
  */
-export const SortTypes = Object.freeze({
+export const SortType = Object.freeze({
   Newest: "newest",
   Oldest: "oldest"
 });

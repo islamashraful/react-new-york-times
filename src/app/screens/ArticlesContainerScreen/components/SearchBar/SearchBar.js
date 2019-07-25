@@ -10,7 +10,7 @@ import SearchIcon from "@material-ui/icons/Search";
 import Select from "@material-ui/core/Select";
 import MenuItem from "@material-ui/core/MenuItem";
 import capitalized from "lodash/capitalize";
-import { SortTypes } from "../../../../utils/sortConst";
+import { SortType } from "../../../../utils/sortConst";
 
 type Props = {
   onChangeDropdownValue: Function,
@@ -66,9 +66,9 @@ const SearchBar = (props: Props) => {
           onChangeDropdownValue(e.target.value);
         }}
       >
-        {Object.keys(SortTypes).map(key => (
-          <MenuItem key={SortTypes[key]} value={SortTypes[key]}>
-            {capitalized(SortTypes[key])}
+        {Object.keys(SortType).map(key => (
+          <MenuItem key={SortType[key]} value={SortType[key]}>
+            {capitalized(SortType[key])}
           </MenuItem>
         ))}
       </Select>

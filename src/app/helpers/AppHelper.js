@@ -10,7 +10,7 @@ export class AppHelper {
     if (partialUrl) {
       imageUrl = `https://static01.nyt.com/${partialUrl}`;
     } else {
-      imageUrl = "https://dummyimage.com/150/f0f2f5/000&text=+IMAGE+NOT+FOUND";
+      imageUrl = "https://dummyimage.com/900/f0f2f5/000&text=+IMAGE+NOT+FOUND";
     }
     return imageUrl;
   }
