@@ -15,15 +15,12 @@ import CardContent from "@material-ui/core/CardContent";
 import CardMedia from "@material-ui/core/CardMedia";
 import { ROUTES } from "../Router/Router.config";
 import { AppHelper } from "../../helpers/AppHelper";
-import { type RouterMatchType } from "../../types/routerMatchType";
 
 const publishedDateFormat = "MMMM D, YYYY";
 
 type Props = {
   /** Classes attached with the component */
   classes: Object,
-  /** router: url parameter */
-  match: RouterMatchType,
   /** router: current url */
   location: any,
   /** router: router history */
@@ -51,15 +48,14 @@ const styles = theme => ({
  * Show details of an article
  */
 class ArticleDetailsScreen extends PureComponent<Props> {
-  componentDidMount() {
-    if (!this.props.location.state) {
-      this.props.history.push(ROUTES.ARTICLES_CONTAINER.path);
-    }
-  }
-
   render() {
     const { classes, location } = this.props;
     const { state: article } = location;
+
+    if (!article) {
+      this.props.history.push(ROUTES.ARTICLES_CONTAINER.path);
+      return null;
+    }
 
     return (
       <Container maxWidth="lg">

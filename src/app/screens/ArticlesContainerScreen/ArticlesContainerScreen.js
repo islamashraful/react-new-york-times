@@ -81,8 +81,11 @@ class ArticlesContainerScreen extends PureComponent<Props, State> {
   }
 
   handleOnClick = (article: ArticleType) => {
+    const splitted = article._id.split("/");
+    const articleId = splitted[splitted.length - 1];
+
     const newRoute = formatRoute(ROUTES.ARTICLE_DETAILS.path, {
-      articleId: article._id.split("article/")[1]
+      articleId
     });
 
     this.props.history.push({
