@@ -16,6 +16,7 @@ import { AppHelper } from "../../helpers/AppHelper";
 import CircularProgress from "@material-ui/core/CircularProgress";
 import { SortType } from "../../utils/sortConst";
 import cx from "classnames";
+import Pagination from "./components/Pagination/Pagination";
 
 type Props = {
   /** Classes attached with the component */
@@ -27,7 +28,8 @@ type Props = {
 type State = {
   articles: ArticleType[],
   loading: boolean,
-  sortBy: $Values<typeof SortType>
+  sortBy: $Values<typeof SortType>,
+  searchBy: string
 };
 
 const styles = theme => ({
@@ -140,6 +142,13 @@ class ArticlesContainerScreen extends PureComponent<Props, State> {
                 ))}
               </Grid>
             )}
+            <Pagination
+              totalItems={150}
+              currentPage={5}
+              onChange={page => {
+                console.log(page);
+              }}
+            />
           </Container>
         </main>
       </>

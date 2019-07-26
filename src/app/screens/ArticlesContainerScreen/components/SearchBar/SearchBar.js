@@ -13,6 +13,8 @@ import capitalized from "lodash/capitalize";
 import { SortType } from "../../../../utils/sortConst";
 
 type Props = {
+  /** Classes attached with the component */
+  classes: Object,
   /** Selected search by option */
   sortBy: $Values<typeof SortType>,
   /** Function to call when dropdown value change */

@@ -1,0 +1,38 @@
+@import "../../../../styles/colors";
+
+.pagination {
+  display: flex;
+  padding-left: 0;
+  list-style: none;
+  border-radius: 0.25rem;
+  font-size: 16px;
+}
+
+.itemClass {
+  a {
+    position: relative;
+    display: block;
+    padding: 0.5rem 0.75rem;
+    margin-left: -1px;
+    line-height: 1.25;
+    color: $blue-color;
+    border: 1px solid $gray-color;
+    text-decoration: none;
+  }
+  &:first-child {
+    a {
+      border-top-left-radius: 0.25rem;
+      border-bottom-left-radius: 0.25rem;
+    }
+  }
+  &:last-child {
+    a {
+      border-top-right-radius: 0.25rem;
+      border-bottom-right-radius: 0.25rem;
+    }
+  }
+  .active {
+    background-color: $blue-color;
+    color: $white-color;
+  }
+}
