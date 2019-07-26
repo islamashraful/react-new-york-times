@@ -57,7 +57,8 @@ const styles = theme => ({
   },
   pagination: {
     padding: "20px 5px",
-    "overflow-x": "auto"
+    "overflow-x": "auto",
+    textAlign: "center"
   }
 });
 
