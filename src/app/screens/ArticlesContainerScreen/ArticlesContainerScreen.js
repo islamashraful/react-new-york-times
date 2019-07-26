@@ -18,6 +18,15 @@ import { SortType } from "../../utils/sortConst";
 import cx from "classnames";
 import Pagination from "./components/Pagination/Pagination";
 
+/** Maximum page number that api supports for pagination */
+const maxPage = 100;
+/** Number of items per page */
+const itemsPerPage = 10;
+/** Character limit for displaying article heading */
+const headingCharLimit = 150;
+/** Character limit for displaying article description */
+const descriptionCharLimit = 100;
+
 type Props = {
   /** Classes attached with the component */
   classes: Object,
@@ -29,7 +38,9 @@ type State = {
   articles: ArticleType[],
   loading: boolean,
   sortBy: $Values<typeof SortType>,
-  searchBy: string
+  searchBy: string,
+  total: number,
+  currentPage: number
 };
 
 const styles = theme => ({
@@ -43,6 +54,10 @@ const styles = theme => ({
   },
   centeredContent: {
     textAlign: "center"
+  },
+  pagination: {
+    padding: "20px 5px",
+    "overflow-x": "auto"
   }
 });
 
@@ -55,7 +70,9 @@ class ArticlesContainerScreen extends PureComponent<Props, State> {
     articles: [],
     loading: false,
     sortBy: SortType.Newest,
-    searchBy: ""
+    searchBy: "",
+    total: 0,
+    currentPage: 1
   };
 
   componentDidMount() {
@@ -79,24 +96,50 @@ class ArticlesContainerScreen extends PureComponent<Props, State> {
       this.setState({
         articles: data.docs,
         loading: false,
-        searchBy: payload && payload.q ? payload.q : ""
+        searchBy: payload && payload.q ? payload.q : "",
+        total: data.meta.hits > maxPage * 10 ? maxPage * 10 : data.meta.hits,
+        currentPage:
+          payload && payload.page + 1
+            ? payload.page + 1
+            : this.state.currentPage
       });
     });
   };
 
   handleInputChange = debounce((value: string) => {
-    this.getNewArticles({ q: value, sort: this.state.sortBy });
+    this.getNewArticles({ q: value, sort: this.state.sortBy, page: 0 });
   }, 500);
 
   handleDropdownValueChange = (value: $Values<typeof SortType>) => {
     this.setState({ sortBy: value });
-    this.getNewArticles({ sort: value, q: this.state.searchBy });
+    this.getNewArticles({ sort: value, q: this.state.searchBy, page: 0 });
+  };
+
+  handlePageChange = (page: number) => {
+    console.log(page);
+    this.getNewArticles({
+      q: this.state.searchBy,
+      sort: this.state.sortBy,
+      page: page > maxPage ? maxPage : page - 1
+    });
   };
 
   render() {
     const { classes } = this.props;
     const { heroContent, cardGrid } = classes;
-    const { articles, loading, sortBy } = this.state;
+    const { articles, loading, sortBy, currentPage, total } = this.state;
+
+    const notFoundMessage = (
+      <Typography
+        component="h1"
+        variant="h3"
+        align="center"
+        color="textPrimary"
+        gutterBottom
+      >
+        No results found with the given keyword
+      </Typography>
+    );
 
     return (
       <>
@@ -126,14 +169,22 @@ class ArticlesContainerScreen extends PureComponent<Props, State> {
               <CircularProgress className={classes.progress} />
             ) : (
               <Grid container spacing={4}>
+                {!total && notFoundMessage}
+
                 {articles.map((article, index) => (
                   <Grid item key={index} xs={12} sm={6} md={4}>
                     <Article
                       imageUrl={AppHelper.getImageUrl(
                         article.multimedia.length && article.multimedia[0].url
                       )}
-                      heading={article.headline.main}
-                      description={article.lead_paragraph}
+                      heading={AppHelper.formatText(
+                        article.headline.main,
+                        headingCharLimit
+                      )}
+                      description={AppHelper.formatText(
+                        article.lead_paragraph,
+                        descriptionCharLimit
+                      )}
                       onClick={() => {
                         this.handleOnClick(article);
                       }}
@@ -142,13 +193,17 @@ class ArticlesContainerScreen extends PureComponent<Props, State> {
                 ))}
               </Grid>
             )}
-            <Pagination
-              totalItems={150}
-              currentPage={5}
-              onChange={page => {
-                console.log(page);
-              }}
-            />
+
+            {!loading && total > itemsPerPage && (
+              <div className={classes.pagination}>
+                <Pagination
+                  totalItems={total}
+                  itemsPerPage={itemsPerPage}
+                  currentPage={currentPage}
+                  onChange={this.handlePageChange}
+                />
+              </div>
+            )}
           </Container>
         </main>
       </>

@@ -1,7 +1,12 @@
 // @flow
 
 export type ArticleType = {
-  id: number,
-  heading: string,
-  description: string
+  _id: string,
+  lead_paragraph: string,
+  headline: {
+    main: string
+  },
+  multimedia: {
+    url: string
+  }[]
 };

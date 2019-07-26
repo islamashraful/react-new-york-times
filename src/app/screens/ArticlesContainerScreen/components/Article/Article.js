@@ -12,9 +12,9 @@ import { withStyles } from "@material-ui/styles";
 type Props = {
   /** Classes attached with the component */
   classes: Object,
-  /** Heading of the component */
+  /** Heading of the article */
   heading: string,
-  /** Description of the component */
+  /** Description of the article */
   description: string,
   /** Url of image */
   imageUrl: String,
@@ -49,9 +49,6 @@ const Article = ({
 }: Props) => {
   const { card, cardMedia, cardContent } = classes;
 
-  const formattedDescription =
-    description.length > 50 ? `${description.slice(0, 100)}...` : description;
-
   return (
     <Card className={card}>
       <CardMedia className={cardMedia} image={imageUrl} />
@@ -59,7 +56,7 @@ const Article = ({
         <Typography gutterBottom variant="h5" component="h2">
           {heading}
         </Typography>
-        <Typography>{formattedDescription}</Typography>
+        <Typography>{description}</Typography>
       </CardContent>
       <CardActions>
         <Button
