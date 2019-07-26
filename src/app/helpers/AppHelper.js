@@ -1,5 +1,11 @@
 // @flow
 
+import defaultImage from "../../logo.png";
+
+/**
+ * App Helper
+ * A wrapper class for common helper methods
+ */
 export class AppHelper {
   /**
    * Get image url
@@ -10,7 +16,7 @@ export class AppHelper {
     if (partialUrl) {
       imageUrl = `https://static01.nyt.com/${partialUrl}`;
     } else {
-      imageUrl = "https://dummyimage.com/900/f0f2f5/000&text=+IMAGE+NOT+FOUND";
+      imageUrl = defaultImage;
     }
     return imageUrl;
   }

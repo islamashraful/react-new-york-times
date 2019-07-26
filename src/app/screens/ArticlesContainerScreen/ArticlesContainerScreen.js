@@ -1,22 +1,22 @@
 // @flow
 
 import React, { PureComponent } from "react";
-import { formatRoute } from "react-router-named-routes";
-import Typography from "@material-ui/core/Typography";
-import Container from "@material-ui/core/Container";
+import cx from "classnames";
+import debounce from "lodash/debounce";
 import Grid from "@material-ui/core/Grid";
 import Article from "./components/Article/Article";
+import Container from "@material-ui/core/Container";
+import Typography from "@material-ui/core/Typography";
 import { withStyles } from "@material-ui/core/styles";
-import { ROUTES } from "../Router/Router.config";
-import { type ArticleType } from "../../types/articleType";
+import { formatRoute } from "react-router-named-routes";
 import SearchBar from "./components/SearchBar/SearchBar";
-import debounce from "lodash/debounce";
-import { getArticles } from "../../api/articleApi";
-import { AppHelper } from "../../helpers/AppHelper";
+import { type ArticleType } from "../../types/articleType";
 import CircularProgress from "@material-ui/core/CircularProgress";
 import { SortType } from "../../utils/sortConst";
-import cx from "classnames";
+import { ROUTES } from "../Router/Router.config";
+import { AppHelper } from "../../helpers/AppHelper";
 import Pagination from "./components/Pagination/Pagination";
+import { getArticles, type ArticlePayload } from "../../api/articleApi";
 
 /** Maximum page number that api supports for pagination */
 const maxPage = 100;
@@ -77,7 +77,7 @@ class ArticlesContainerScreen extends PureComponent<Props, State> {
   };
 
   componentDidMount() {
-    this.getNewArticles();
+    this.getNewArticles({ page: 0, sort: SortType.Newest, q: "" });
   }
 
   handleOnClick = (article: ArticleType) => {
@@ -94,20 +94,23 @@ class ArticlesContainerScreen extends PureComponent<Props, State> {
     });
   };
 
-  getNewArticles = (payload: Object) => {
+  getNewArticles = (payload: ArticlePayload) => {
     this.setState({ loading: true });
 
     getArticles(payload)
       .then(data => {
+        const maxItemsForPagination = maxPage * itemsPerPage;
+
         this.setState({
           articles: data.docs,
           loading: false,
-          searchBy: payload && payload.q ? payload.q : "",
-          total: data.meta.hits > maxPage * 10 ? maxPage * 10 : data.meta.hits,
-          currentPage:
-            payload && payload.page + 1
-              ? payload.page + 1
-              : this.state.currentPage
+          searchBy: payload.q,
+          sortBy: payload.sort,
+          total:
+            data.meta.hits > maxItemsForPagination
+              ? maxItemsForPagination
+              : data.meta.hits,
+          currentPage: payload.page + 1
         });
       })
       .catch(ex => {
@@ -116,20 +119,22 @@ class ArticlesContainerScreen extends PureComponent<Props, State> {
   };
 
   handleInputChange = debounce((value: string) => {
-    this.getNewArticles({ q: value, sort: this.state.sortBy, page: 0 });
+    const payload: any = { sort: this.state.sortBy, page: 0, q: value.trim() };
+
+    this.getNewArticles(payload);
   }, 500);
 
   handleDropdownValueChange = (value: $Values<typeof SortType>) => {
-    this.setState({ sortBy: value });
-    this.getNewArticles({ sort: value, q: this.state.searchBy, page: 0 });
+    this.getNewArticles({ sort: value, page: 0, q: this.state.sortBy });
   };
 
   handlePageChange = (page: number) => {
-    console.log(page);
+    const { searchBy, sortBy } = this.state;
+
     this.getNewArticles({
-      q: this.state.searchBy,
-      sort: this.state.sortBy,
-      page: page > maxPage ? maxPage : page - 1
+      q: searchBy,
+      sort: sortBy,
+      page: page - 1
     });
   };
 
