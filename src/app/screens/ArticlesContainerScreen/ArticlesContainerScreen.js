@@ -96,18 +96,23 @@ class ArticlesContainerScreen extends PureComponent<Props, State> {
 
   getNewArticles = (payload: Object) => {
     this.setState({ loading: true });
-    getArticles(payload).then(data => {
-      this.setState({
-        articles: data.docs,
-        loading: false,
-        searchBy: payload && payload.q ? payload.q : "",
-        total: data.meta.hits > maxPage * 10 ? maxPage * 10 : data.meta.hits,
-        currentPage:
-          payload && payload.page + 1
-            ? payload.page + 1
-            : this.state.currentPage
+
+    getArticles(payload)
+      .then(data => {
+        this.setState({
+          articles: data.docs,
+          loading: false,
+          searchBy: payload && payload.q ? payload.q : "",
+          total: data.meta.hits > maxPage * 10 ? maxPage * 10 : data.meta.hits,
+          currentPage:
+            payload && payload.page + 1
+              ? payload.page + 1
+              : this.state.currentPage
+        });
+      })
+      .catch(ex => {
+        this.setState({ loading: false });
       });
-    });
   };
 
   handleInputChange = debounce((value: string) => {
@@ -141,7 +146,7 @@ class ArticlesContainerScreen extends PureComponent<Props, State> {
         color="textPrimary"
         gutterBottom
       >
-        No results found with the given keyword
+        No results found
       </Typography>
     );
 
@@ -172,30 +177,31 @@ class ArticlesContainerScreen extends PureComponent<Props, State> {
             {loading ? (
               <CircularProgress className={classes.progress} />
             ) : (
-              <Grid container spacing={4}>
+              <>
                 {!total && notFoundMessage}
-
-                {articles.map((article, index) => (
-                  <Grid item key={index} xs={12} sm={6} md={4}>
-                    <Article
-                      imageUrl={AppHelper.getImageUrl(
-                        article.multimedia.length && article.multimedia[0].url
-                      )}
-                      heading={AppHelper.formatText(
-                        article.headline.main,
-                        headingCharLimit
-                      )}
-                      description={AppHelper.formatText(
-                        article.lead_paragraph,
-                        descriptionCharLimit
-                      )}
-                      onClick={() => {
-                        this.handleOnClick(article);
-                      }}
-                    />
-                  </Grid>
-                ))}
-              </Grid>
+                <Grid container spacing={4}>
+                  {articles.map((article, index) => (
+                    <Grid item key={index} xs={12} sm={6} md={4}>
+                      <Article
+                        imageUrl={AppHelper.getImageUrl(
+                          article.multimedia.length && article.multimedia[0].url
+                        )}
+                        heading={AppHelper.formatText(
+                          article.headline.main,
+                          headingCharLimit
+                        )}
+                        description={AppHelper.formatText(
+                          article.lead_paragraph,
+                          descriptionCharLimit
+                        )}
+                        onClick={() => {
+                          this.handleOnClick(article);
+                        }}
+                      />
+                    </Grid>
+                  ))}
+                </Grid>
+              </>
             )}
 
             {!loading && total > itemsPerPage && (

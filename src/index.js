@@ -3,8 +3,10 @@
 import React from "react";
 import ReactDOM from "react-dom";
 import { BrowserRouter } from "react-router-dom";
+import { ToastContainer } from "react-toastify";
 import Router from "./app/screens/Router/Router";
 import * as serviceWorker from "./serviceWorker";
+import "react-toastify/dist/ReactToastify.css";
 
 const element = document.getElementById("root");
 
@@ -12,6 +14,7 @@ if (!element) throw new Error("Couldn't find element with id root");
 
 const renderApp = (
   <BrowserRouter>
+    <ToastContainer />
     <Router />
   </BrowserRouter>
 );
